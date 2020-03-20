@@ -31,33 +31,42 @@
 
 (defn staff [width]
   [:<>
-  [:line {:x1 "0" :y1 "2" :x2 width :y2 "2" :stroke "black"}]
-  [:line {:x1 "0" :y1 "22" :x2 width :y2 "22" :stroke "black"}]
-  [:line {:x1 "0" :y1 "42" :x2 width :y2 "42" :stroke "black"}]
-  [:line {:x1 "0" :y1 "62" :x2 width :y2 "62" :stroke "black"}]
-  [:line {:x1 "0" :y1 "82" :x2 width :y2 "82" :stroke "black"}]])
+   [:line {:x1 "0" :y1 "2" :x2 width :y2 "2" :stroke "black"}]
+   [:line {:x1 "0" :y1 "22" :x2 width :y2 "22" :stroke "black"}]
+   [:line {:x1 "0" :y1 "42" :x2 width :y2 "42" :stroke "black"}]
+   [:line {:x1 "0" :y1 "62" :x2 width :y2 "62" :stroke "black"}]
+   [:line {:x1 "0" :y1 "82" :x2 width :y2 "82" :stroke "black"}]])
 
 (defn note-head [x-pos y-pos] [:ellipse {:cx x-pos :cy y-pos :rx "15" :ry "10"}])
 
 (defn note []
-  (reagent/with-let [width 50
-                     handle-keys (fn [e] (js/console.log e))
-                     _ (js/document.addEventListener "keyup" handle-keys)]
+  (let [width 50]
     (js/console.log "rendering")
     [:div.container
      {:on-click (fn [e] (js/console.log e))}
      [:svg {:viewBox "0 0 500 500" :xmlns "http://www.w3.org/2000/svg"}
       [note-head 25 72]
       [stem 40]
-      [staff 50]]]
-     (finally
-       (js/document.removeEventListener "keyup" handle-keys))))
+      [staff 50]]]))
+
+(defn staff-builder []
+  (reagent/with-let [notes (reagent/atom [])
+                     handle-keys (fn [e]
+                                   (if (= (.-key e) "a")
+                                     (swap! notes (fn [curr] (conj curr "a")))
+                                     (js/console.log "not an a")))
+                     _ (js/document.addEventListener "keyup" handle-keys)]
+    [:div
+     (map (fn [a-note] [note]) @notes)
+     [:div "Hello world"]]
+    (finally
+      (js/document.removeEventListener "keyup" handle-keys))))
 
 (defn home-page []
   (fn []
     [:span.main
      [:h1 "This is neat"]
-     [note]
+     [staff-builder]
      [:ul
       [:li [:a {:href (path-for :items)} "Items of cljs-demo"]]
       [:li [:a {:href "/broken/link"} "Broken link"]]]]))
