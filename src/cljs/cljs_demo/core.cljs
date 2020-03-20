@@ -39,6 +39,16 @@
 
 (defn note-head [x-pos y-pos] [:ellipse {:cx x-pos :cy y-pos :rx "15" :ry "10"}])
 
+(defn play-note [frequency duration]
+  (let [context (js/AudioContext.)
+        oscillator (.createOscillator context)
+        ]
+    (set! (.. oscillator -frequency -value ) frequency)
+    (.connect oscillator (.-destination context))
+    (.start oscillator 0)
+    (js/setTimeout (fn [] (.stop oscillator)) duration)))
+
+;; TODO: style lines/ellipses
 (defn note [x-pos]
   (let [width 50]
     [:<>
