@@ -39,15 +39,11 @@
 
 (defn note-head [x-pos y-pos] [:ellipse {:cx x-pos :cy y-pos :rx "15" :ry "10"}])
 
-(defn note []
+(defn note [x-pos]
   (let [width 50]
-    (js/console.log "rendering")
-    [:div.container
-     {:on-click (fn [e] (js/console.log e))}
-     [:svg {:viewBox "0 0 500 500" :xmlns "http://www.w3.org/2000/svg"}
-      [note-head 25 72]
-      [stem 40]
-      [staff 50]]]))
+    [:<>
+     [note-head x-pos 72]
+     [stem (+ x-pos 15)]]))
 
 (defn staff-builder []
   (reagent/with-let [notes (reagent/atom [])
@@ -57,8 +53,12 @@
                                      (js/console.log "not an a")))
                      _ (js/document.addEventListener "keyup" handle-keys)]
     [:div
-     (map (fn [a-note] [note]) @notes)
-     [:div "Hello world"]]
+     [:svg {:viewBox "0 0 500 500" :xmlns "http://www.w3.org/2000/svg"}
+      (map-indexed (fn [index a-note]
+                     [:<>
+                      ;; TODO: make this not overlay a buncha staffs
+                      [staff (* index 50)]
+                      [note (* index 50)]]) @notes)]]
     (finally
       (js/document.removeEventListener "keyup" handle-keys))))
 
