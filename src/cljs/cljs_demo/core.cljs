@@ -27,15 +27,21 @@
 ;; Page components
 
 (defn note []
-  [:div.container
-   [:svg {:viewBox "0 0 500 500" :xmlns "http://www.w3.org/2000/svg"}
-    [:ellipse {:cx "100" :cy "72" :rx "15" :ry "10"}]
-    [:line {:x1 "113" :y1 "2" :x2 "113" :y2 "74" :stroke "black"}]
-    [:line {:x1 "0" :y1 "2" :x2 "500" :y2 "2" :stroke "black"}]
-    [:line {:x1 "0" :y1 "22" :x2 "500" :y2 "22" :stroke "black"}]
-    [:line {:x1 "0" :y1 "42" :x2 "500" :y2 "42" :stroke "black"}]
-    [:line {:x1 "0" :y1 "62" :x2 "500" :y2 "62" :stroke "black"}]
-    [:line {:x1 "0" :y1 "82" :x2 "500" :y2 "82" :stroke "black"}]]])
+  (reagent/with-let [handle-keys (fn [e] (js/console.log e))
+                     _ (js/document.addEventListener "keyup" handle-keys)]
+    (js/console.log "rendering")
+    [:div.container
+     {:on-click (fn [e] (js/console.log e))}
+     [:svg {:viewBox "0 0 500 500" :xmlns "http://www.w3.org/2000/svg"}
+      [:ellipse {:cx "100" :cy "72" :rx "15" :ry "10"}]
+      [:line {:x1 "113" :y1 "2" :x2 "113" :y2 "74" :stroke "black"}]
+      [:line {:x1 "0" :y1 "2" :x2 "500" :y2 "2" :stroke "black"}]
+      [:line {:x1 "0" :y1 "22" :x2 "500" :y2 "22" :stroke "black"}]
+      [:line {:x1 "0" :y1 "42" :x2 "500" :y2 "42" :stroke "black"}]
+      [:line {:x1 "0" :y1 "62" :x2 "500" :y2 "62" :stroke "black"}]
+      [:line {:x1 "0" :y1 "82" :x2 "500" :y2 "82" :stroke "black"}]]]
+     (finally
+       (js/document.removeEventListener "keyup" handle-keys))))
 
 (defn home-page []
   (fn []
